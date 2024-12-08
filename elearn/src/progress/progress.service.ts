@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model , Types } from 'mongoose';
 import { Progress, ProgressDocument } from './progress.schema';
 import { Course, CourseDocument } from 'src/courses/courses.schema'; 
 
@@ -40,4 +40,38 @@ export class ProgressService {
     const completedCourses = progress.filter(p => p.completionPercentage === 100).map(p => p.courseId);
     return this.courseModel.find({ _id: { $nin: completedCourses } }).exec();
   }
+
+    // Retrieve all progress records for a specific user
+    async findProgressByUserId(userId: Types.ObjectId): Promise<Progress[]> {
+        return this.progressModel.find({ userId }).populate('courseId');
+    }
+
+    // Calculate overall completion rate for a specific user
+    async calculateCompletionRate(userId: Types.ObjectId): Promise<number> {
+        const progressRecords = await this.findProgressByUserId(userId);
+        const total = progressRecords.reduce((acc, curr) => acc + curr.completionPercentage, 0);
+        return total / progressRecords.length;
+    }
+
+    // Retrieve progress details for all students in a specific course (for instructors)
+    async getCourseProgress(courseId: Types.ObjectId): Promise<Progress[]> {
+        return this.progressModel.find({ courseId }).populate('userId');
+    }
+
+    async getCourseAnalytics(courseId: Types.ObjectId): Promise<any[]> {
+        const progressData = await this.progressModel.find({ courseId }).populate({
+            path: 'userId',  // Assuming you have a reference to a User schema
+            select: 'name email'  // Only fetch the name and email of the user, adjust according to your user schema
+        }).exec();
+
+        // Transform the data if needed, or return as is
+        return progressData.map(item => ({
+            studentId: item.userId._id,
+            completionPercentage: item.completionPercentage,
+            lastAccessed: item.lastAccessed
+        }));
+    }
+
+    
+    // More detailed analytics functions can be added here
 }

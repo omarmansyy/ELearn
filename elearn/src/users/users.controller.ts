@@ -1,44 +1,36 @@
-import { Controller, Get, Post, Put, Delete, Body, Param,Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './users.schema';
+import { Controller, Post, Body, Request, UseGuards, Get, Put , Param , Query} from '@nestjs/common';
+import { AuthService } from 'src/auth/auth.service';
+import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
+import { StudentUpdateDto } from './dto/student-update.dto';
+import { InstructorUpdateDto } from './dto/instructor-update.dto';
 
-@Controller('users')
-export class UsersController {
-  constructor(private usersService: UsersService) {}
 
-  @Get()
-  getAllUsers() {
-    return this.usersService.findAll();
-  }
+@Controller('auth')
+export class AuthController {
+  constructor(private authService: AuthService) {}
 
-  @Get(':id')
-  getUser(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  getProfile(@Request() req) {
+    return req.user;
   }
+  @Put('update-student/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('student')
+   async updateStudentProfile(@Param('id') id: string, @Body() updateDto: StudentUpdateDto) {
+        return this.updateStudentProfile(id, updateDto);
+    }
 
-  @Post()
-  createUser(@Body() user: User) {
-    return this.usersService.create(user);
-  }
-
-  @Put(':id')
-  updateUser(@Param('id') id: string, @Body() user: User) {
-    return this.usersService.update(id, user);
-  }
-
-  @Delete(':id')
-  deleteUser(@Param('id') id: string) {
-    return this.usersService.delete(id);
-  }
-  // Search for students by name or email
-  @Get('search/students')
-  async searchStudents(@Query('query') query: string) {
-    return this.usersService.searchStudents(query);
-  }
-
-  // Search for instructors by name or expertise
-  @Get('search/instructors')
-  async searchInstructors(@Query('query') query: string) {
-    return this.usersService.searchInstructors(query);
-  }
+  
+    @Put('update-instructor/:id')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('instructor')
+    async updateInstructorProfile(@Param('id') id: string, @Body() updateDto: InstructorUpdateDto) {
+        return this.updateInstructorProfile(id, updateDto);
+    }
 }

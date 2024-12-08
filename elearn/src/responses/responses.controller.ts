@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
 import { ResponsesService } from './responses.service';
 import { Response } from './responses.schema';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+
 
 @Controller('responses')
+
 export class ResponsesController {
   constructor(private responsesService: ResponsesService) {}
 
@@ -10,7 +13,6 @@ export class ResponsesController {
   getAllResponses() {
     return this.responsesService.findAll();
   }
-
   @Get(':id')
   getResponse(@Param('id') id: string) {
     return this.responsesService.findOne(id);

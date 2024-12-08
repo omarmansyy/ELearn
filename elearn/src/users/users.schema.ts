@@ -5,6 +5,10 @@ export type UserDocument = User & Document;
 
 @Schema()
 export class User {
+  toObject(): { [x: string]: any; passwordHash: any; } {
+    throw new Error('Method not implemented.');
+  }
+  
   @Prop({ required: true })
   name: string;
 
@@ -14,7 +18,7 @@ export class User {
   @Prop({ required: true })
   passwordHash: string;
 
-  @Prop()
+  @Prop({ required: true, enum: ['student', 'instructor', 'admin'] })
   role: string;
 
   @Prop()
@@ -22,6 +26,23 @@ export class User {
 
   @Prop({ default: Date.now })
   createdAt: Date;
+
+  @Prop({ default: false })
+  isEmailVerified: boolean;
+
+  @Prop()
+  learningPreferences: string[];
+
+  @Prop()
+  subjectsOfInterest: string[];
+
+    // Instructor-specific fields
+  @Prop()
+  expertiseAreas: string[];
+
+  @Prop()
+  teachingInterests: string[];
+    
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
