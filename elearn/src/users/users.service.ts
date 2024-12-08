@@ -27,4 +27,25 @@ export class UsersService {
   async delete(id: string): Promise<any> {
     return this.userModel.findByIdAndDelete(id).exec();
   }
+
+  async searchStudents(query: string): Promise<User[]> {
+    return this.userModel.find({
+      role: 'student',
+      $or: [
+        { name: { $regex: query, $options: 'i' } },
+        { email: { $regex: query, $options: 'i' } },
+      ],
+    }).exec();
+  }
+
+  // Search for instructors
+  async searchInstructors(query: string): Promise<User[]> {
+    return this.userModel.find({
+      role: 'instructor',
+      $or: [
+        { name: { $regex: query, $options: 'i' } },
+        { expertise: { $regex: query, $options: 'i' } }, // If you add expertise to User schema
+      ],
+    }).exec();
+  }
 }

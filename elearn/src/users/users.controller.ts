@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param,Query } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './users.schema';
 
@@ -29,5 +29,16 @@ export class UsersController {
   @Delete(':id')
   deleteUser(@Param('id') id: string) {
     return this.usersService.delete(id);
+  }
+  // Search for students by name or email
+  @Get('search/students')
+  async searchStudents(@Query('query') query: string) {
+    return this.usersService.searchStudents(query);
+  }
+
+  // Search for instructors by name or expertise
+  @Get('search/instructors')
+  async searchInstructors(@Query('query') query: string) {
+    return this.usersService.searchInstructors(query);
   }
 }
