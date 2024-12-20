@@ -5,12 +5,12 @@ import { UsersService } from '../users/users.service';
 import { jwtConstants } from './constant'; // Ensure this contains the secret key
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class JwtStrategy extends PassportStrategy(Strategy , 'jwt') {
     constructor(private usersService: UsersService) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: jwtConstants.secret,
+            secretOrKey: 'your_default_secret',
         });
     }
 

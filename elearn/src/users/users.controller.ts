@@ -10,8 +10,8 @@ import { StudentUpdateDto } from './dto/student-update.dto';
 import { InstructorUpdateDto } from './dto/instructor-update.dto';
 
 
-@Controller('auth')
-export class AuthController {
+@Controller('user')
+export class UsersController {
   constructor(private authService: AuthService) {}
 
   @UseGuards(JwtAuthGuard)

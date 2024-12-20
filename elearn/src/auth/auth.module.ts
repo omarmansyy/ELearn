@@ -1,25 +1,27 @@
 // src/auth/auth.module.ts
-import { Module } from '@nestjs/common';
+import { Module ,  forwardRef } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule , JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
-import { UsersModule } from '../users/users.module';
+import { UsersModule } from 'src/users/users.module';
 import { AuthController } from './auth.controller';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { jwtConstants } from './constant';
+import {EmailModule} from 'src/common/email/email.module'
 
 @Module({
     imports: [
-        UsersModule,
-        PassportModule,
         JwtModule.register({
-            secret: jwtConstants.secret,
-            signOptions: { expiresIn: jwtConstants.expiresIn },
+          secret: jwtConstants.secret ||'your_default_secret',  // Make sure this is defined in your environment or hard-coded securely
+          signOptions: { expiresIn: jwtConstants.expiresIn}
         }),
-    ],
-    providers: [AuthService, LocalStrategy, JwtStrategy],
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+        forwardRef(() =>EmailModule),
+        forwardRef(() => UsersModule)
+      ],
+    providers: [AuthService, LocalStrategy, JwtService , JwtStrategy],
     controllers: [AuthController],
-    exports: [AuthService],
+    exports: [AuthService , JwtService],
 })
 export class AuthModule {}

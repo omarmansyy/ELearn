@@ -13,25 +13,22 @@ export class UsersService {
     return this.userModel.findOne({ email: email }).exec();
   }
 
-  async create(userData: { email: string; password: string; role: string }): Promise<User | undefined> {
-    if (!this.isValidRole(userData.role)) {
-        throw new Error('Invalid role provided.');
+  async create(name: string, email: string, password: string, role: string): Promise<any> {
+    const existingUser = await this.userModel.findOne({ email });
+    if (existingUser) {
+        throw new Error('Email already exists.');
     }
 
-    // Hash the password before storing it in the database
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
-
-    // Create a new user object with hashed password
+    // Proceed with hashing the password and creating the user
+    const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new this.userModel({
-        email: userData.email,
-        password: hashedPassword,
-        role: userData.role
+        name,
+        email,
+        passwordHash: hashedPassword,
+        role
     });
 
-    // Save the new user to the database
     await newUser.save();
-
-    // Return the newly created user
     return newUser;
 }
   async findOne(email: string): Promise<User | undefined> {

@@ -7,8 +7,8 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('register')
-  async register(@Body() body: { email: string, password: string, role: string }) {
-    return await this.authService.registerUser(body.email, body.password, body.role);
+  async register(@Body() body: {name:string, email: string, password: string, role: string }) {
+    return await this.authService.registerUser(body.name ,body.email, body.password, body.role);
   }
 
   @Get('verify')

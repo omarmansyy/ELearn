@@ -1,12 +1,12 @@
 // src/auth/local.strategy.ts
-import { Strategy, ExtractJwt } from 'passport-jwt';
+import { Strategy } from 'passport-local'; // Correct import for local strategy
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 @Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy) {
-    constructor(private authService: AuthService) {
+export class LocalStrategy extends PassportStrategy(Strategy , 'jwt') {
+    constructor(private authService: AuthService ) {
         super({
             usernameField: 'email',  // Use 'email' to authenticate if that's your identifier
             passwordField: 'password',  // Explicitly setting the default field for password

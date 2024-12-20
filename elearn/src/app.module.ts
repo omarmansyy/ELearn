@@ -20,10 +20,11 @@ import { LoggingInterceptor } from 'src/common/interceptors/logging.interceptor'
     UsersModule, CoursesModule, ModulesModule, QuizzesModule,ChatModule, ResponsesModule, ProgressModule, NotesModule, ForumModule],
   controllers: [AppController],
   providers: [
+    AppService,  // Directly provide the AppService
     {
-        provide: APP_INTERCEPTOR,
-        useClass: LoggingInterceptor
+      provide: APP_INTERCEPTOR,  // Configuration for providing the interceptor
+      useClass: LoggingInterceptor
     }
-],
+  ],
 })
 export class AppModule {}
