@@ -1,33 +1,32 @@
-import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Delete, Put } from '@nestjs/common';
 import { NotesService } from './notes.service';
-import { Note } from './notes.schema';
+import { CreateNoteDto } from './dto/create-note.dto';
 
 @Controller('notes')
 export class NotesController {
-  constructor(private notesService: NotesService) {}
+  constructor(private readonly notesService: NotesService) {}
 
-  @Get()
-  getAllNotes() {
-    return this.notesService.findAll();
+  // Create a new personal note for a user (with optional courseId)
+  @Post('create')
+  async createNote(@Body() createNoteDto: CreateNoteDto) {
+    return this.notesService.createNote(createNoteDto);
   }
 
-  @Get(':id')
-  getNote(@Param('id') id: string) {
-    return this.notesService.findOne(id);
+  // Get all notes for a specific user
+  @Get('user/:userId')
+  async getNotes(@Param('userId') userId: string) {
+    return this.notesService.getNotes(userId);
   }
 
-  @Post()
-  createNote(@Body() note: Note) {
-    return this.notesService.create(note);
-  }
-
+  // Update a personal note by ID
   @Put(':id')
-  updateNote(@Param('id') id: string, @Body() note: Note) {
-    return this.notesService.update(id, note);
+  async updateNote(@Param('id') id: string, @Body('content') content: string) {
+    return this.notesService.updateNote(id, content);
   }
 
+  // Delete a personal note by ID
   @Delete(':id')
-  deleteNote(@Param('id') id: string) {
-    return this.notesService.delete(id);
+  async deleteNote(@Param('id') id: string) {
+    return this.notesService.deleteNote(id);
   }
 }

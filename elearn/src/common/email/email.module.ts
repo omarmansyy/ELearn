@@ -1,14 +1,10 @@
-// Example of using forwardRef in EmailModule if it depends back on AuthModule
-import { forwardRef, Module } from '@nestjs/common';
-import { AuthModule } from 'src/auth/auth.module';
-import {EmailService} from 'src/common/email/email.service';
-import { JwtStrategy } from 'src/auth/jwt.strategy';
+import { Module } from '@nestjs/common';
+import { EmailService } from 'src/common/email/email.service';
+import { JwtModule } from '@nestjs/jwt';  // Import JwtModule to make JwtService available
 
 @Module({
-  imports: [
-    forwardRef(() =>AuthModule),
-  ],
+  imports: [JwtModule],  
   providers: [EmailService],
-  exports: [EmailService]
+  exports: [EmailService],
 })
 export class EmailModule {}
