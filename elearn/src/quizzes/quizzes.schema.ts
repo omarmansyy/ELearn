@@ -10,15 +10,13 @@ class Question {
   @Prop({ required: true })
   options: string[];
 
-  @Prop({ required: true })
+  @Prop()
   correctAnswer: string;
-
-  @Prop({ enum: ['easy', 'medium', 'hard'], default: 'easy' })
-  difficulty: string; // Difficulty level of the question
 }
 
 @Schema()
 export class Quiz {
+
   @Prop({ required: true, type: Types.ObjectId, ref: 'Module' })
   moduleId: Types.ObjectId;
 

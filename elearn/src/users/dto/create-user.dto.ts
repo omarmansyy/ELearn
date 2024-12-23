@@ -1,16 +1,15 @@
-// Update CreateUserDto
-import { IsString, IsEmail, IsNotEmpty, IsEnum } from 'class-validator';
+import { IsString, IsEmail, IsNotEmpty ,IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 enum UserRole {
     Student = 'student',
     Instructor = 'instructor',
     Admin = 'admin',
-}
+  }
 
 export class CreateUserDto {
     @IsNotEmpty()
     @IsString()
-    name: string;  // Changed from username to name to match your schema
+    username: string;
 
     @IsNotEmpty()
     @IsString()
@@ -21,7 +20,7 @@ export class CreateUserDto {
     email: string;
 
     @ApiProperty({ enum: UserRole, example: UserRole.Student })
-    @IsEnum(UserRole)
-    @IsNotEmpty()
-    role: UserRole;
+  @IsEnum(UserRole)
+  @IsNotEmpty()
+  role: UserRole; 
 }
