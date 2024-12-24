@@ -1,8 +1,7 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
 import { ResponsesService } from './responses.service';
 import { Response } from './responses.schema';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-
+  
 
 @Controller('responses')
 

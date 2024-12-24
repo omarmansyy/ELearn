@@ -3,9 +3,7 @@
 import { Controller, Get, Post, Put, Delete, Body, Param  , UseGuards , UnauthorizedException, Req , Res} from '@nestjs/common';
 import { ProgressService } from './progress.service';
 import { Progress } from './progress.schema';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { RolesGuard } from '../auth/roles.guard';
-import { Roles } from '../auth/roles.decorator';
+
 import {  Types } from 'mongoose';
 import { parse } from 'json2csv';
 import { Response } from 'express';
@@ -28,23 +26,18 @@ export class ProgressController {
 
 
   
-    @UseGuards(JwtAuthGuard) // Ensures that the user is logged in
     @Get('dashboard/:userId')
     async getStudentProgress(@Param('userId') userId: Types.ObjectId, @Req() req: Request) {
         const userProgress = await this.progressService.findProgressByUserId(userId);
         const completionRate = await this.progressService.calculateCompletionRate(userId);
         return { progress: userProgress, completionRate };
     }
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('instructor') // Ensures that only instructors can access this endpoint
     @Get('dashboard/:courseId')
     async getCourseAnalytics(@Param('courseId') courseId: Types.ObjectId) {
         const courseProgress = await this.progressService.getCourseProgress(courseId);
         return { courseProgress };
     }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('instructor')
     @Get('download-dashboard/:courseId')
     async downloadCourseAnalytics(@Param('courseId') courseId: string, @Res() response: Response) {
         try {
