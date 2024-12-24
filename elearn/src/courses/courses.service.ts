@@ -4,10 +4,12 @@ import { Model, Types } from 'mongoose';
 import { Course, CourseDocument } from './courses.schema';
 import { UpdateCourseDto } from './dto/update-course.dto';
 import { CreateCourseDto } from './dto/create-course.dto';
+import { User, UserDocument } from 'src/users/users.schema';
 
 @Injectable()
 export class CoursesService {
-  constructor(@InjectModel(Course.name) private courseModel: Model<CourseDocument>) {}
+  constructor(@InjectModel(Course.name) private courseModel: Model<CourseDocument>,
+  @InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   // Create a course with an instructor
   async createCourse(createCourseDto: CreateCourseDto, instructorId: string): Promise<Course> {
@@ -45,13 +47,22 @@ export class CoursesService {
   }
 
   // Search courses by title or description
-  async searchCourses(query: string): Promise<Course[]> {
-    return this.courseModel.find({
-      $or: [
-        { title: { $regex: query, $options: 'i' } }, // case-insensitive match
-        { description: { $regex: query, $options: 'i' } }, // case-insensitive match
-      ],
-    }).exec();
-  }
   
+  
+  async searchCourses(category?: string, instructorName?: string): Promise<Course[]> {
+    let filter = {};
+    let query = this.courseModel.find(filter);
+
+    if (category) {
+      filter['category'] = category;
+    }
+
+    if (instructorName) {
+      const instructors = await this.userModel.find({ name: instructorName, role: 'instructor' }).select('_id');
+      const instructorIds = instructors.map(doc => doc._id);
+      filter['createdBy'] = { $in: instructorIds };
+    }
+
+    return query.populate('createdBy').exec();
+  }
 }

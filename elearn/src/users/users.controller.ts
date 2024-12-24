@@ -1,36 +1,53 @@
+import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './users.schema';
-import { Controller, Post, Body, Request, UseGuards, Get, Put , Param , Query} from '@nestjs/common';
-import { AuthService } from 'src/auth/auth.service';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RolesGuard } from '../auth/roles.guard';
-import { Roles } from '../auth/roles.decorator';
+import { CreateUserDto } from './dto/create-user.dto';
 import { StudentUpdateDto } from './dto/student-update.dto';
-import { InstructorUpdateDto } from './dto/instructor-update.dto';
+import { AuthGuard } from 'src/auth/guards/authentication.guard';
+import { Public } from 'src/auth/decorators/public.decorator';
+import { Role, Roles } from 'src/auth/decorators/roles.decorator';
+import { authorizationGaurd } from 'src/auth/guards/authorization.gaurd';
 
-
-@Controller('user')
+// @UseGuards(AuthGuard) //class level
+@Controller('students') // it means anything starts with /student
 export class UsersController {
-  constructor(private authService: AuthService) {}
+    constructor(private studentService: UsersService) { }
+    @Public()
+    @Get() 
+    // Get all students
+    async getAllStudents(): Promise<User[]> {
+        return await this.studentService.findAll();
+    }
+    @UseGuards(AuthGuard)// handler level
 
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
-  }
-  @Put('update-student/:id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('student')
-   async updateStudentProfile(@Param('id') id: string, @Body() updateDto: StudentUpdateDto) {
-        return this.updateStudentProfile(id, updateDto);
+    @Get('currentUser')
+    async getCurrentUser(@Req() {user}): Promise<User> {
+        const student = await this.studentService.findById(user.userid);
+        console.log(student)
+        return student;
     }
 
-  
-    @Put('update-instructor/:id')
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('instructor')
-    async updateInstructorProfile(@Param('id') id: string, @Body() updateDto: InstructorUpdateDto) {
-        return this.updateInstructorProfile(id, updateDto);
+
+    @Roles(Role.User)
+    @UseGuards(authorizationGaurd)
+    @Get(':id')// /student/:id
+    // Get a single student by ID
+    async getStudentById(@Param('id') id: string):Promise<User> {// Get the student ID from the route parameters
+        const student = await this.studentService.findById(id);
+        return student;
+    }
+    // Create a new student
+   
+    // Update a student's details
+    @Put(':id')
+    async updateStudent(@Param('id') id:string,@Body()studentData: StudentUpdateDto) {
+        const updatedStudent = await this.studentService.update(id, studentData);
+        return updatedStudent;       
+    }
+    // Delete a student by ID
+    @Delete(':id')
+    async deleteStudent(@Param('id')id:string) {
+        const deletedStudent = await this.studentService.delete(id);
+       return deletedStudent;
     }
 }

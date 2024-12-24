@@ -10,7 +10,6 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Login form submitted');  // Check if this is logged
 
     const loginData = { email, password };
 
@@ -21,6 +20,7 @@ const Login = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(loginData),
+        credentials: 'include', // Necessary to include cookies with the request
       });
 
       const result = await response.json();
@@ -78,7 +78,7 @@ const Login = () => {
               required
             />
             <button type="submit" className={styles.button}>Log In</button>
-          </form>
+          </form> 
           {error && <p className={styles.error}>{error}</p>}  {/* Display error message if any */}
           <p className={styles.footer}>
             Don’t have an account? <a href="/register" className={styles.link}>Sign up here</a>.

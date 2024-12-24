@@ -1,4 +1,4 @@
-import { User } from './users/user.schema';  // Adjust the import according to where your User model/schema is defined
+import { User } from './users/users.schema';  // Adjust the import according to where your User model/schema is defined
 
 declare global {
   namespace Express {

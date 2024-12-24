@@ -12,6 +12,11 @@ export class CoursesController {
     private modulesService: ModulesService
   ) {}
 
+
+  @Get('search')
+  search(@Query('category') category: string, @Query('instructorName') instructorName: string) {
+    return this.coursesService.searchCourses(category, instructorName);
+  }
   // Create a new course
   @Post()
   async createCourse(
