@@ -11,7 +11,10 @@ export class NotesController {
   async createNote(@Body() createNoteDto: CreateNoteDto) {
     return this.notesService.createNote(createNoteDto);
   }
-
+  @Get()
+  async findAll(): Promise<any[]> {
+      return await this.notesService.findAll();
+  }
   // Get all notes for a specific user
   @Get('user/:userId')
   async getNotes(@Param('userId') userId: string) {

@@ -1,0 +1,78 @@
+.notesList {
+    list-style-type: none;
+    padding: 0;
+    width: 100%;
+    max-width: 800px; /* Adjust max-width for better alignment and readability */
+}
+
+.noteItem {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9; /* Light background for notes */
+}
+
+.noteContent {
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    color: #333; /* Ensuring content is clearly visible */
+}
+
+.noteDate {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+}
+
+.container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Align content to the top */
+    min-height: 100vh; /* Ensures the container fills at least the whole vertical height of the viewport */
+    padding: 20px;
+}
+
+.form {
+    width: 100%; /* Full width of its parent */
+    max-width: 800px; /* Larger max-width for a bigger form */
+    margin-top: 20px; /* Space from top or navbar */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.textarea {
+    width: 100%; /* Makes the textarea take up the full width of its parent (.form) */
+    height: 300px; /* Increased height for more space */
+    padding: 15px; /* More padding for better text input experience */
+    resize: vertical; /* Allows the user to resize the textarea vertically */
+    margin-bottom: 20px;
+    border: 1px solid #ccc; /* Defined border for better visibility */
+    border-radius: 5px; /* Rounded corners */
+}
+
+.button {
+    padding: 15px 30px; /* Larger button for better interaction */
+    cursor: pointer;
+    background-color: #0056b3; /* A darker shade of blue for better contrast */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px; /* Larger font size for readability */
+}
+
+/* If there is a navbar, you may need additional styling */
+.navbar {
+    width: 100%;
+    background-color: #eee; /* Light grey background for the navbar */
+    padding: 10px 20px; /* Padding for breathing space */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+    position: fixed; /* Fixed at the top */
+    top: 0;
+    left: 0;
+    z-index: 1000; /* Ensures navbar is above other content */
+}

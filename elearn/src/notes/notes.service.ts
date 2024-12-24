@@ -16,6 +16,10 @@ export class NotesService {
     return createdNote.save();
   }
 
+  async findAll(): Promise<Note[]> {
+    return this.noteModel.find().exec();
+}
+
   // Get all notes for a specific user (with or without course association)
   async getNotes(userId: string): Promise<Note[]> {
     return this.noteModel.find({ userId }).exec();

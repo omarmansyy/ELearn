@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import styles from '../styles/courses.module.css';
+import styles from '../styles/Courses.module.css'; // Make sure to create this CSS module
+import Navbar from './navbar';
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -7,45 +8,38 @@ const Courses = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/courses');
-        
+    fetch('http://localhost:3000/courses')
+      .then(response => {
         if (!response.ok) {
-          throw new Error('Failed to fetch courses');
+          throw new Error('Network response was not ok');
         }
-
-        const data = await response.json();
+        return response.json();
+      })
+      .then(data => {
         setCourses(data);
         setLoading(false);
-      } catch (err) {
-        setError(err.message);
+      })
+      .catch(error => {
+        setError('Failed to load courses: ' + error.message);
         setLoading(false);
-      }
-    };
-
-    fetchCourses();
+      });
   }, []);
 
-  if (loading) return <div>Loading courses...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <p>Loading courses...</p>;
+  if (error) return <p>Error loading courses: {error}</p>;
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Our Courses</h1>
+      <Navbar/>
+      <h1 className={styles.heading}>Available Courses</h1>
       <div className={styles.courseList}>
-        {courses.length === 0 ? (
-          <p>No courses available</p>
-        ) : (
-          courses.map((course) => (
-            <div key={course._id} className={styles.courseCard}>
-              <h3>{course.title}</h3>
-              <p>{course.description}</p>
-              <p><strong>Category:</strong> {course.category}</p>
-              <p><strong>Difficulty Level:</strong> {course.difficultyLevel}</p>
-            </div>
-          ))
-        )}
+        {courses.map(course => (
+          <div key={course.id} className={styles.courseCard}>
+            <h2 className={styles.courseTitle}>{course.title}</h2>
+            <p>{course.description}</p>
+            <span className={styles.courseStatus}>Status: {course.status}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
