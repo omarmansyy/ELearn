@@ -7,12 +7,14 @@ import { Note, NoteDocument } from './notes.schema';
 export class NotesService {
   constructor(@InjectModel(Note.name) private noteModel: Model<NoteDocument>) {}
 
+ 
   async findAll(): Promise<Note[]> {
-    return this.noteModel.find().populate('userId').populate('courseId').exec();
-  }
+    return this.noteModel.find().exec();
+}
 
-  async findOne(id: string): Promise<Note> {
-    return this.noteModel.findById(id).populate('userId').populate('courseId').exec();
+  // Get all notes for a specific user (with or without course association)
+  async getNotes(userId: string): Promise<Note[]> {
+    return this.noteModel.find({ userId }).exec();
   }
 
   async create(note: Note): Promise<Note> {
