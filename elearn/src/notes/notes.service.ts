@@ -2,32 +2,29 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Note, NoteDocument } from './notes.schema';
-import { CreateNoteDto } from './dto/create-note.dto';
 
 @Injectable()
 export class NotesService {
-  constructor(
-    @InjectModel(Note.name) private noteModel: Model<NoteDocument>,
-  ) {}
+  constructor(@InjectModel(Note.name) private noteModel: Model<NoteDocument>) {}
 
-  // Create a new personal note for a user (with optional courseId)
-  async createNote(createNoteDto: CreateNoteDto): Promise<Note> {
-    const createdNote = new this.noteModel(createNoteDto);
-    return createdNote.save();
+  async findAll(): Promise<Note[]> {
+    return this.noteModel.find().populate('userId').populate('courseId').exec();
   }
 
-  // Get all notes for a specific user (with or without course association)
-  async getNotes(userId: string): Promise<Note[]> {
-    return this.noteModel.find({ userId }).exec();
+  async findOne(id: string): Promise<Note> {
+    return this.noteModel.findById(id).populate('userId').populate('courseId').exec();
   }
 
-  // Update a note by ID for a specific user
-  async updateNote(id: string, content: string): Promise<Note> {
-    return this.noteModel.findByIdAndUpdate(id, { content, lastUpdated: new Date() }, { new: true }).exec();
+  async create(note: Note): Promise<Note> {
+    const newNote = new this.noteModel(note);
+    return newNote.save();
   }
 
-  // Delete a note by ID for a specific user
-  async deleteNote(id: string): Promise<any> {
+  async update(id: string, note: Note): Promise<Note> {
+    return this.noteModel.findByIdAndUpdate(id, note, { new: true }).exec();
+  }
+
+  async delete(id: string): Promise<any> {
     return this.noteModel.findByIdAndDelete(id).exec();
   }
 }

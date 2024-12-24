@@ -18,31 +18,15 @@ import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { AuthenticationMiddleware } from 'src/auth/middleware/authentication.middleware';
 
 @Module({
-  imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/e-learning2'),
-    UsersModule,
-    CoursesModule,
-    ModulesModule,
-    QuizzesModule,
-    ChatModule,
-    ResponsesModule,
-    ProgressModule,
-    NotesModule,
-    ForumModule,
-    ConfigModule.forRoot(),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET || 'yourSecretKeyHere',  // Use environment variable or fallback to default
-      signOptions: { expiresIn: '1h' },  // Set expiration time for JWT tokens
-    }),
-  ],
+  imports: [MongooseModule.forRoot('mongodb://localhost:27017/e-learning2'),
+    UsersModule, CoursesModule, ModulesModule, QuizzesModule,ChatModule, ResponsesModule, ProgressModule, NotesModule, ForumModule],
   controllers: [AppController],
   providers: [
-    AppService,
     {
-      provide: APP_INTERCEPTOR,
-      useClass: LoggingInterceptor,
-    },
-  ],
+        provide: APP_INTERCEPTOR,
+        useClass: LoggingInterceptor
+    }
+],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

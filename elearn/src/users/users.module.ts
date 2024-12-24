@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
@@ -12,6 +13,21 @@ import { AuthGuard } from 'src/auth/guards/authentication.guard';
   controllers: [UsersController],
   providers: [UsersService],
   exports:[UsersService]
+=======
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { User, UserSchema } from './users.schema';
+import { UsersController } from './users.controller';
+import { UsersService } from './users.service';
+
+@Module({
+  imports: [
+    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])
+  ],
+  controllers: [UsersController],
+  providers: [UsersService],
+  exports: [UsersService] // Exporting UsersService if it needs to be used in other modules
+>>>>>>> f7c45640766255b12145010e956b7f3c25885c0d
 })
 
 // @Module({
